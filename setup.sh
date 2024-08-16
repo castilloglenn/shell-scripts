@@ -6,7 +6,7 @@ echo "Sourcing scripts in $current_path\n"
 current_file=$(basename "$0")
 
 sh_files=($(dirname "$0")/functions/*.sh)
-total_files=$((${#sh_files[@]} - 1))
+total_files=${#sh_files[@]}
 index=1
 
 for file in "${sh_files[@]}"; do
