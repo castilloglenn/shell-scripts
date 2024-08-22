@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# Load environment variables from .env file
-if [ -f .env ]; then
-    export $(grep -v '^#' .env | xargs)
+# Get the directory of the current script
+script_dir=$(dirname "$0")
+echo "Script directory: $script_dir"
+
+# Load environment variables from .env file in the same directory
+if [ -f "$script_dir/.env" ]; then
+    export $(grep -v '^#' "$script_dir/.env" | xargs)
     echo ".env file loaded!"
 else
     echo ".env file not found!"
 fi
 
 # This script sources all other scripts in the same directory
-current_path=$(pwd)
-echo "Sourcing scripts in $current_path\n"
-current_file=$(basename "$0")
-
-sh_files=($(dirname "$0")/functions/*.sh)
+sh_files=($script_dir/functions/*.sh)
 total_files=${#sh_files[@]}
 index=1
 
