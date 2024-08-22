@@ -32,6 +32,9 @@ cs_switchaccount() {
             return 1
         fi
 
+        # Export the token for Account 1
+        export GITHUB_TOKEN="${GIT_USER_1_TOKEN}"
+
         # Set global git configuration for Account 1
         git config --global user.name "${GIT_USER_1_NAME}"
         git config --global user.email "${GIT_USER_1_EMAIL}"
@@ -46,6 +49,9 @@ cs_switchaccount() {
             echo "Error: GIT_USER_2_NAME, GIT_USER_2_EMAIL, and GIT_USER_2_TOKEN must be set for Account 2."
             return 1
         fi
+
+        # Export the token for Account 2
+        export GITHUB_TOKEN="${GIT_USER_2_TOKEN}"
 
         # Set global git configuration for Account 2
         git config --global user.name "${GIT_USER_2_NAME}"
@@ -62,6 +68,15 @@ cs_switchaccount() {
 }
 
 cs_whichaccount() {
-    git config user.name
-    git config user.email
+    git config --global user.name
+    git config --global user.email
+}
+
+cs_clonewithexplicittoken() {
+    if [[ $1 != https://github.com/* ]]; then
+        echo "Error: Invalid URL. Please provide a valid GitHub URL starting with 'https://github.com/'."
+        return 1
+    fi
+    url_with_token=$(echo "$1" | sed "s/https:\/\//https:\/\/${GITHUB_TOKEN}@/g")
+    git clone "$url_with_token"
 }
