@@ -42,7 +42,8 @@ done
 # Prompt user to switch to a specific GitHub account
 printf "\033[1;34m[INFO]\033[0m Please select a GitHub account to switch to:\n"
 printf "  \033[1;33m[a]\033[0m Account 1\n"
-printf "  \033[1;33m[b]\033[0m Account 2\n"
+printf "  \033[1;33m[b]\033[0m Account 2\n\n"
+printf "Enter your choice: "
 read -r account
 
 # Validate the input
