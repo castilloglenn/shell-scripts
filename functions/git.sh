@@ -41,7 +41,7 @@ cs_switchaccount() {
 
         # Set the token in the Git credentials cache for Account 1
         echo -e "protocol=https\nhost=github.com\nusername=${GIT_USER_1_NAME}\npassword=${GIT_USER_1_TOKEN}" | git credential-cache store
-        echo "Switched to GitHub Account 1"
+        echo -e "\e[1;32mSwitched to GitHub Account 1: \e[1;34m${GIT_USER_1_NAME}\e[0m"
 
     elif [[ $1 == "b" ]]; then
         # Check if the required environment variables for Account 2 are set
@@ -59,7 +59,7 @@ cs_switchaccount() {
 
         # Set the token in the Git credentials cache for Account 2
         echo -e "protocol=https\nhost=github.com\nusername=${GIT_USER_2_NAME}\npassword=${GIT_USER_2_TOKEN}" | git credential-cache store
-        echo "Switched to GitHub Account 2"
+        echo -e "\e[1;32mSwitched to GitHub Account 2: \e[1;34m${GIT_USER_2_NAME}\e[0m"
 
     else
         echo "Unknown account. Please specify 'a' or 'b'."
