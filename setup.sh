@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Load environment variables from .env file
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+else
+  echo ".env file not found!"
+fi
+
 # This script sources all other scripts in the same directory
 current_path=$(pwd)
 echo "Sourcing scripts in $current_path\n"
