@@ -2,9 +2,10 @@
 
 # Load environment variables from .env file
 if [ -f .env ]; then
-  export $(grep -v '^#' .env | xargs)
+    export $(grep -v '^#' .env | xargs)
+    echo ".env file loaded!"
 else
-  echo ".env file not found!"
+    echo ".env file not found!"
 fi
 
 # This script sources all other scripts in the same directory
