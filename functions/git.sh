@@ -23,3 +23,45 @@ cs_pushtonewbranch() {
     git checkout -b castilloglenn/$DATE/$1
     git push --set-upstream origin castilloglenn/$DATE/$1
 }
+
+cs_switchaccount() {
+    if [[ $1 == "a" ]]; then
+        # Check if the required environment variables for Account 1 are set
+        if [[ -z "${GIT_USER_1_NAME}" || -z "${GIT_USER_1_EMAIL}" || -z "${GIT_USER_1_TOKEN}" ]]; then
+            echo "Error: GIT_USER_1_NAME, GIT_USER_1_EMAIL, and GIT_USER_1_TOKEN must be set for Account 1."
+            return 1
+        fi
+
+        # Set global git configuration for Account 1
+        git config --global user.name "${GIT_USER_1_NAME}"
+        git config --global user.email "${GIT_USER_1_EMAIL}"
+
+        # Set the token in the Git credentials cache for Account 1
+        echo -e "protocol=https\nhost=github.com\nusername=${GIT_USER_1_NAME}\npassword=${GIT_USER_1_TOKEN}" | git credential-cache store
+        echo "Switched to GitHub Account 1"
+
+    elif [[ $1 == "b" ]]; then
+        # Check if the required environment variables for Account 2 are set
+        if [[ -z "${GIT_USER_2_NAME}" || -z "${GIT_USER_2_EMAIL}" || -z "${GIT_USER_2_TOKEN}" ]]; then
+            echo "Error: GIT_USER_2_NAME, GIT_USER_2_EMAIL, and GIT_USER_2_TOKEN must be set for Account 2."
+            return 1
+        fi
+
+        # Set global git configuration for Account 2
+        git config --global user.name "${GIT_USER_2_NAME}"
+        git config --global user.email "${GIT_USER_2_EMAIL}"
+
+        # Set the token in the Git credentials cache for Account 2
+        echo -e "protocol=https\nhost=github.com\nusername=${GIT_USER_2_NAME}\npassword=${GIT_USER_2_TOKEN}" | git credential-cache store
+        echo "Switched to GitHub Account 2"
+
+    else
+        echo "Unknown account. Please specify 'a' or 'b'."
+        return 1
+    fi
+}
+
+cs_whichaccount() {
+    git config user.name
+    git config user.email
+}
