@@ -46,10 +46,10 @@ printf "  \033[1;33m[b]\033[0m $GIT_USER_2_EMAIL\n\n"
 printf "Enter your choice: "
 read -r account
 
-# Validate the input
+# Default to account 'a' if the user enters an invalid choice
 if [[ "$account" != "a" && "$account" != "b" ]]; then
-    printf "\033[1;31m[ERROR]\033[0m Invalid input. Please enter 'a' for Account 1 or 'b' for Account 2.\n"
-    exit 1
+    printf "\033[1;33m[WARNING]\033[0m Invalid choice. Defaulting to account 'a'.\n"
+    account="a"
 fi
 
 # Call the function to switch to the specified GitHub account
