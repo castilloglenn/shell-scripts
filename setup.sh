@@ -36,3 +36,16 @@ for file in "${sh_files[@]}"; do
         ((index++))
     fi
 done
+
+# Prompt user to switch to a specific GitHub account
+echo "Switch to GitHub Account 1 or 2? (a/b)"
+read -r account
+
+# Validate the input
+if [[ "$account" != "a" && "$account" != "b" ]]; then
+    echo "Invalid input. Please enter 'a' for Account 1 or 'b' for Account 2."
+    exit 1
+fi
+
+# Call the function to switch to the specified GitHub account
+cs_switchaccount "$account"
