@@ -15,12 +15,41 @@ urlencode() {
     echo "${encoded}"
 }
 
-commit_message=$(git log -1 --pretty=%B)
-repo_url=$(git remote get-url origin)
+# Get the current GitHub user name
+current_user_name=$(git config --global user.name)
 
-# URL-encode the parameters
-encoded_commit_message=$(urlencode "${commit_message}")
-encoded_repo_url=$(urlencode "${repo_url}")
+# Check if the current user name is not GIT_USER_1_NAME
+if [[ "${current_user_name}" != "${GIT_USER_1_NAME}" ]]; then
+    echo "Executing the post-commit hook for user ${current_user_name}"
+    commit_message=$(git log -1 --pretty=%B)
+    repo_url=$(git remote get-url origin)
 
-# Make the curl request with URL-encoded parameters
-curl -X POST "${GCP_CF_ENDPOINT}?commit_message=${encoded_commit_message}&repo_url=${encoded_repo_url}"
+    # Split the URL by "/" and extract the last two segments
+    IFS='/' read -r -a url_parts <<< "${repo_url}"
+
+    # Calculate the indices for the last two elements
+    length=${#url_parts[@]}
+    username="${url_parts[$((length-2))]}"
+    repo_name="${url_parts[$((length-1))]}"
+
+    # Remove the .git suffix if it exists
+    repo_name="${repo_name%.git}"
+
+    # Construct the public format URL
+    public_repo_url="https://github.com/${username}/${repo_name}"
+
+    # URL-encode the parameters
+    encoded_commit_message=$(urlencode "${commit_message}")
+    encoded_repo_url=$(urlencode "${public_repo_url}")
+
+    # Ensure the endpoint is set
+    if [ -z "${GCP_CF_ENDPOINT}" ]; then
+        echo "Error: GCP_CF_ENDPOINT is not set."
+        exit 1
+    fi
+
+    # Make the curl request with URL-encoded parameters
+    curl -X POST "${GCP_CF_ENDPOINT}?commit_message=${encoded_commit_message}&repo_url=${encoded_repo_url}"
+else
+    echo "Skipping the post-commit hook for user ${current_user_name}"
+fi
