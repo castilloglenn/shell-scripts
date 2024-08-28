@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Environment variables
+GIT_USER_1_NAME_VALUE=${GIT_USER_1_NAME:-""}
+GCP_CF_ENDPOINT_VALUE=${GCP_CF_ENDPOINT:-""}
+
 # Function to URL-encode a string
 urlencode() {
     local string="${1}"
@@ -18,8 +22,8 @@ urlencode() {
 # Get the current GitHub user name
 current_user_name=$(git config --global user.name)
 
-# Check if the current user name is not GIT_USER_1_NAME
-if [[ "${current_user_name}" != "${GIT_USER_1_NAME}" ]]; then
+# Check if the current user name is not GIT_USER_1_NAME_VALUE
+if [[ "${current_user_name}" != "${GIT_USER_1_NAME_VALUE}" ]]; then
     echo "Executing the post-commit hook for user ${current_user_name}"
     commit_message=$(git log -1 --pretty=%B)
     repo_url=$(git remote get-url origin)
@@ -42,14 +46,8 @@ if [[ "${current_user_name}" != "${GIT_USER_1_NAME}" ]]; then
     encoded_commit_message=$(urlencode "${commit_message}")
     encoded_repo_url=$(urlencode "${public_repo_url}")
 
-    # Ensure the endpoint is set
-    if [ -z "${GCP_CF_ENDPOINT}" ]; then
-        echo "Error: GCP_CF_ENDPOINT is not set."
-        exit 1
-    fi
-
     # Make the curl request with URL-encoded parameters
-    curl -X POST "${GCP_CF_ENDPOINT}?commit_message=${encoded_commit_message}&repo_url=${encoded_repo_url}"
+    curl -X POST "${GCP_CF_ENDPOINT_VALUE}?commit_message=${encoded_commit_message}&repo_url=${encoded_repo_url}"
 else
     echo "Skipping the post-commit hook for user ${current_user_name}"
 fi
