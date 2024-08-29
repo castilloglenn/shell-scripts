@@ -19,25 +19,26 @@ urlencode() {
     echo "${encoded}"
 }
 
-# Get the current GitHub user name
-current_user_name=$(git config --global user.name)
+repo_url=$(git remote get-url origin)
+
+# Split the URL by "/" and extract the last two segments
+IFS='/' read -r -a url_parts <<< "${repo_url}"
+
+# Calculate the indices for the last two elements
+length=${#url_parts[@]}
+username="${url_parts[$((length-2))]}"
+repo_name="${url_parts[$((length-1))]}"
+
+# Remove the .git suffix if it exists
+repo_name="${repo_name%.git}"
+
+# Log repository owner
+echo "Repository owner: ${username}"
 
 # Check if the current user name is not GIT_USER_1_NAME_VALUE
-if [[ "${current_user_name}" != "${GIT_USER_1_NAME_VALUE}" ]]; then
-    echo "Executing the post-commit hook for user ${current_user_name}"
+if [[ "${username}" != "${GIT_USER_1_NAME_VALUE}" ]]; then
+    echo "Adding a log copy to main account: ${GIT_USER_1_NAME_VALUE}"
     commit_message=$(git log -1 --pretty=%B)
-    repo_url=$(git remote get-url origin)
-
-    # Split the URL by "/" and extract the last two segments
-    IFS='/' read -r -a url_parts <<< "${repo_url}"
-
-    # Calculate the indices for the last two elements
-    length=${#url_parts[@]}
-    username="${url_parts[$((length-2))]}"
-    repo_name="${url_parts[$((length-1))]}"
-
-    # Remove the .git suffix if it exists
-    repo_name="${repo_name%.git}"
 
     # Construct the public format URL
     public_repo_url="https://github.com/${username}/${repo_name}"
@@ -49,5 +50,5 @@ if [[ "${current_user_name}" != "${GIT_USER_1_NAME_VALUE}" ]]; then
     # Make the curl request with URL-encoded parameters
     curl -X POST "${GCP_CF_ENDPOINT_VALUE}?commit_message=${encoded_commit_message}&repo_url=${encoded_repo_url}"
 else
-    echo "Skipping the post-commit hook for user ${current_user_name}"
+    echo "Skipping the log copy for main account: ${GIT_USER_1_NAME_VALUE}"
 fi
