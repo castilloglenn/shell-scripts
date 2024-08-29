@@ -12,13 +12,10 @@ fi
 
 # This script sources all other scripts in the same directory
 sh_files=($script_dir/functions/*.sh)
-total_files=${#sh_files[@]}
-index=1
 
 for file in "${sh_files[@]}"; do
     if [ "$(basename "$file")" != "$current_file" ]; then
         source "$file"
-        ((index++))
     fi
 done
 
