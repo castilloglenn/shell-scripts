@@ -1,5 +1,7 @@
 #!/bin/bash
 
+printf "\033[1;34m[INFO]\033[0m Setting up Shell Scripts...\n"
+
 # Get the directory of the current script
 script_dir=$(dirname "$0")
 printf "\n\033[1;34m[INFO]\033[0m Script directory: \033[1m%s\033[0m\n" "$script_dir"
@@ -55,3 +57,5 @@ fi
 # Call the function to switch to the specified GitHub account
 printf "\n\033[1;34m[INFO]\033[0m Switching to GitHub Account %s...\n" "$account"
 cs_switchaccount "$account"
+
+printf "\033[1;32m[SUCCESS]\033[0m Shell Scripts setup complete.\n\n"
