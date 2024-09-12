@@ -1,3 +1,5 @@
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fcastilloglenn%2Fshell-scripts&count_bg=%230C82D3&title_bg=%23555555&icon=myspace.svg&icon_color=%23E7E7E7&title=Visits&edge_flat=false)](https://hits.seeyoufarm.com)
+
 # Shell Script Automation
 
 This repository provides a simple automation setup for shell scripting, allowing you to automatically source multiple scripts and their functions every time you open a terminal session. The setup involves two scripts: `activate.sh` and `setup.sh`.
