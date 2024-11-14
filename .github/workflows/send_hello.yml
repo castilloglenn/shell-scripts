@@ -1,0 +1,19 @@
+name: Scheduled Notifications (Blade Replacements)
+
+on:
+  schedule:
+    - cron: '* * * * *'  # Runs every minute
+
+jobs:
+  say_hello:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Hello World script
+        run: |
+          python -c "print('hello world')"
