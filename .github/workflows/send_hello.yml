@@ -2,7 +2,7 @@ name: Scheduled Notifications (Blade Replacements)
 
 on:
   schedule:
-    - cron: '* * * * *'  # Runs every minute
+    - cron: '* * * * *'
 
 jobs:
   say_hello:
