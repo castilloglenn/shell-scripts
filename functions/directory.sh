@@ -15,3 +15,7 @@ tb() {
     cd "$HOME${CLIENT_DIRECTORY}takokase-backend"
 }
 
+ts() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-scripts"
+}
+
