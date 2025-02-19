@@ -3,8 +3,15 @@ goto() {
     cd "$HOME${CLIENT_DIRECTORY}$project"
 }
 
-t() {
-    project=$1
-    cd "$HOME${CLIENT_DIRECTORY}takokase-$project"
+tw() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-web"
+}
+
+tm() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-mobile"
+}
+
+tb() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-backend"
 }
 
