@@ -8,9 +8,17 @@ tw() {
     code .
 }
 
+two() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-web"
+}
+
 tm() {
     cd "$HOME${CLIENT_DIRECTORY}takokase-mobile"
     code .
+}
+
+tmo() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-mobile"
 }
 
 tb() {
@@ -18,8 +26,16 @@ tb() {
     code .
 }
 
+tbo() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-backend"
+}
+
 ts() {
     cd "$HOME${CLIENT_DIRECTORY}takokase-scripts"
     code .
+}
+
+tso() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-scripts"
 }
 
