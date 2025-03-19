@@ -39,3 +39,12 @@ tso() {
     cd "$HOME${CLIENT_DIRECTORY}takokase-scripts"
 }
 
+tbs() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-batch-service"
+    code .
+}
+
+tbso() {
+    cd "$HOME${CLIENT_DIRECTORY}takokase-batch-service"
+}
+
