@@ -48,3 +48,29 @@ tbso() {
     cd "$HOME${CLIENT_DIRECTORY}takokase-batch-service"
 }
 
+fe() {
+    cd "$HOME${CLIENT_DIRECTORY}ta_lms_fe"
+}
+
+feo() {
+    cd "$HOME${CLIENT_DIRECTORY}ta_lms_fe"
+    code .
+}
+
+be() {
+    cd "$HOME${CLIENT_DIRECTORY}ta_lms_be"
+}
+
+beo() {
+    cd "$HOME${CLIENT_DIRECTORY}ta_lms_be"
+    code .
+}
+
+afe() {
+    cd "$HOME${CLIENT_DIRECTORY}ta_lms_admin_fe"
+}
+
+afeo() {
+    cd "$HOME${CLIENT_DIRECTORY}ta_lms_admin_fe"
+    code .
+}
