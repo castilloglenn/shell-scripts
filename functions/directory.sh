@@ -74,3 +74,12 @@ afeo() {
     cd "$HOME${CLIENT_DIRECTORY}ta_lms_admin_fe"
     code .
 }
+
+lt2() {
+    cd "$HOME${CLIENT_DIRECTORY}opz-loadtest"
+}
+
+lt2o() {
+    cd "$HOME${CLIENT_DIRECTORY}opz-loadtest"
+    code .
+}
