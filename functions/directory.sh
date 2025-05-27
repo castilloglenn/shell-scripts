@@ -75,11 +75,11 @@ afeo() {
     code .
 }
 
-lt2() {
+lt() {
     cd "$HOME${CLIENT_DIRECTORY}opz-loadtest"
 }
 
-lt2o() {
+lto() {
     cd "$HOME${CLIENT_DIRECTORY}opz-loadtest"
     code .
 }
