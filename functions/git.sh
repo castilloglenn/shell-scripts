@@ -69,3 +69,19 @@ cs_clonewithexplicittoken() {
     url_with_token=$(echo "$1" | sed "s/https:\/\//https:\/\/${GITHUB_TOKEN}@/g")
     git clone "$url_with_token"
 }
+
+cs_pulldevelop() {
+    git stash
+    git checkout develop
+    git fetch origin --prune
+    git pull --rebase
+    git stash pop
+}
+
+commit() {
+    if [ $# -eq 0 ]; then
+        echo "Usage: commit <commit-message>"
+        return 1
+    fi
+    git commit -m "$*"
+}

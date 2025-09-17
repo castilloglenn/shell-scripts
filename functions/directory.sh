@@ -1,3 +1,7 @@
+cs_editscripts() {
+    code "$HOME/documents/personal/shell-scripts"
+}
+
 goto() {
     project=$1
     cd "$HOME${CLIENT_DIRECTORY}$project"
