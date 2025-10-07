@@ -1,4 +1,4 @@
-cs_editscripts() {
+editshellscripts() {
     code "$HOME/documents/personal/shell-scripts"
 }
 
