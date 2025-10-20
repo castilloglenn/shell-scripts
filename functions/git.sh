@@ -87,4 +87,5 @@ commit() {
     git add .
     git commit -m "$*"
     git reset HEAD~1
+    cd -
 }
