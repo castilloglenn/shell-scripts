@@ -83,5 +83,8 @@ commit() {
         echo "Usage: commit <commit-message>"
         return 1
     fi
+    cd /Users/hipe/documents/personal/commit-history
+    git add .
     git commit -m "$*"
+    git reset HEAD~1
 }
