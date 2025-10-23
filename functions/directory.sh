@@ -1,3 +1,7 @@
+restartzshell() {
+    source ~/.zshrc
+}
+
 editshellscripts() {
     code "$HOME/documents/personal/shell-scripts"
 }
