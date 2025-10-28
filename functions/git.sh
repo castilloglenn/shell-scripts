@@ -50,6 +50,23 @@ cs_switchaccount() {
         # Set the token in the Git credentials cache for Account 2
         echo -e "protocol=https\nhost=github.com\nusername=${GIT_USER_2_NAME}\npassword=${GIT_USER_2_TOKEN}" | git credential-cache store
         echo -e "\e[1;32mSwitched to GitHub Account 2: \e[1;34m${GIT_USER_2_NAME}\e[0m"
+    elif [[ $1 == "c" ]]; then
+        # Check if the required environment variables for Account 3 are set
+        if [[ -z "${GIT_USER_3_NAME}" || -z "${GIT_USER_3_EMAIL}" || -z "${GIT_USER_3_TOKEN}" ]]; then
+            echo "Error: GIT_USER_3_NAME, GIT_USER_3_EMAIL, and GIT_USER_3_TOKEN must be set for Account 3."
+            return 1
+        fi
+
+        # Export the token for Account 3
+        export GITHUB_TOKEN="${GIT_USER_3_TOKEN}"
+
+        # Set global git configuration for Account 3
+        git config --global user.name "${GIT_USER_3_NAME}"
+        git config --global user.email "${GIT_USER_3_EMAIL}"
+
+        # Set the token in the Git credentials cache for Account 3
+        echo -e "protocol=https\nhost=github.com\nusername=${GIT_USER_3_NAME}\npassword=${GIT_USER_3_TOKEN}" | git credential-cache store
+        echo -e "\e[1;32mSwitched to GitHub Account 3: \e[1;34m${GIT_USER_3_NAME}\e[0m"
     else
         echo "Unknown account. Please specify 'a' or 'b'."
         return 1
