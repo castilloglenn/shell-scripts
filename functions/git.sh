@@ -14,63 +14,48 @@ cs_rebasemain() {
     git stash pop
 }
 
-cs_switchaccount() {
-    if [[ $1 == "a" ]]; then
-        # Check if the required environment variables for Account 1 are set
-        if [[ -z "${GIT_USER_1_NAME}" || -z "${GIT_USER_1_EMAIL}" || -z "${GIT_USER_1_TOKEN}" ]]; then
-            echo "Error: GIT_USER_1_NAME, GIT_USER_1_EMAIL, and GIT_USER_1_TOKEN must be set for Account 1."
-            return 1
-        fi
-
-        # Export the token for Account 1
-        export GITHUB_TOKEN="${GIT_USER_1_TOKEN}"
-
-        # Set global git configuration for Account 1
-        git config --global user.name "${GIT_USER_1_NAME}"
-        git config --global user.email "${GIT_USER_1_EMAIL}"
-
-        # Set the token in the Git credentials cache for Account 1
-        echo -e "protocol=https\nhost=github.com\nusername=${GIT_USER_1_NAME}\npassword=${GIT_USER_1_TOKEN}" | git credential-cache store
-        echo -e "\e[1;32mSwitched to GitHub Account 1: \e[1;34m${GIT_USER_1_NAME}\e[0m"
-
-    elif [[ $1 == "b" ]]; then
-        # Check if the required environment variables for Account 2 are set
-        if [[ -z "${GIT_USER_2_NAME}" || -z "${GIT_USER_2_EMAIL}" || -z "${GIT_USER_2_TOKEN}" ]]; then
-            echo "Error: GIT_USER_2_NAME, GIT_USER_2_EMAIL, and GIT_USER_2_TOKEN must be set for Account 2."
-            return 1
-        fi
-
-        # Export the token for Account 2
-        export GITHUB_TOKEN="${GIT_USER_2_TOKEN}"
-
-        # Set global git configuration for Account 2
-        git config --global user.name "${GIT_USER_2_NAME}"
-        git config --global user.email "${GIT_USER_2_EMAIL}"
-
-        # Set the token in the Git credentials cache for Account 2
-        echo -e "protocol=https\nhost=github.com\nusername=${GIT_USER_2_NAME}\npassword=${GIT_USER_2_TOKEN}" | git credential-cache store
-        echo -e "\e[1;32mSwitched to GitHub Account 2: \e[1;34m${GIT_USER_2_NAME}\e[0m"
-    elif [[ $1 == "c" ]]; then
-        # Check if the required environment variables for Account 3 are set
-        if [[ -z "${GIT_USER_3_NAME}" || -z "${GIT_USER_3_EMAIL}" || -z "${GIT_USER_3_TOKEN}" ]]; then
-            echo "Error: GIT_USER_3_NAME, GIT_USER_3_EMAIL, and GIT_USER_3_TOKEN must be set for Account 3."
-            return 1
-        fi
-
-        # Export the token for Account 3
-        export GITHUB_TOKEN="${GIT_USER_3_TOKEN}"
-
-        # Set global git configuration for Account 3
-        git config --global user.name "${GIT_USER_3_NAME}"
-        git config --global user.email "${GIT_USER_3_EMAIL}"
-
-        # Set the token in the Git credentials cache for Account 3
-        echo -e "protocol=https\nhost=github.com\nusername=${GIT_USER_3_NAME}\npassword=${GIT_USER_3_TOKEN}" | git credential-cache store
-        echo -e "\e[1;32mSwitched to GitHub Account 3: \e[1;34m${GIT_USER_3_NAME}\e[0m"
-    else
-        echo "Unknown account. Please specify 'a' or 'b'."
+cs_change_git_account() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: cs_change_git_account <personal|lrtechs|goat|hipe>"
         return 1
     fi
+
+    local account="$1"
+    local idx
+    case "$account" in
+        personal) idx=1 ;;
+        lrtechs)  idx=2 ;;
+        goat)     idx=3 ;;
+        hipe)     idx=4 ;;
+        *)
+            echo "Unknown account. Please specify 'personal', 'lrtechs', 'goat', or 'hipe'."
+            return 1
+            ;;
+    esac
+
+    local name_var="GIT_USER_${idx}_NAME"
+    local email_var="GIT_USER_${idx}_EMAIL"
+    local token_var="GIT_USER_${idx}_TOKEN"
+
+    # Resolve values without using bash-specific indirect expansion
+    local name
+    local email
+    local token
+    name=$(eval "printf '%s' \"\${$name_var}\"")
+    email=$(eval "printf '%s' \"\${$email_var}\"")
+    token=$(eval "printf '%s' \"\${$token_var}\"")
+
+    if [[ -z "$name" || -z "$email" || -z "$token" ]]; then
+        echo "Error: $name_var, $email_var, and $token_var must be set for account '$account'."
+        return 1
+    fi
+
+    export GITHUB_TOKEN="$token"
+    git config --global user.name "$name"
+    git config --global user.email "$email"
+
+    printf "protocol=https\nhost=github.com\nusername=%s\npassword=%s\n" "$name" "$token" | git credential-cache store
+    echo -e "\e[1;32mSwitched to GitHub account: \e[1;34m${name}\e[0m"
 }
 
 cs_whichaccount() {
