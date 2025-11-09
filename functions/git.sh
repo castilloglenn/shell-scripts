@@ -14,9 +14,9 @@ cs_rebasemain() {
     git stash pop
 }
 
-cs_change_git_account() {
+cs_switch_git_account() {
     if [[ -z "$1" ]]; then
-        echo "Usage: cs_change_git_account <personal|lrtechs|goat|hipe>"
+        echo "Usage: cs_switch_git_account <personal|lrtechs|goat|hipe>"
         return 1
     fi
 
@@ -53,6 +53,31 @@ cs_change_git_account() {
     export GITHUB_TOKEN="$token"
     git config --global user.name "$name"
     git config --global user.email "$email"
+
+    # Update ~/.netrc for github.com with selected account (uses $name and $token)
+    NETRC="$HOME/.netrc"
+    tmp="$(mktemp 2>/dev/null || mktemp /tmp/netrc.XXXXXX)"
+
+    # Backup existing file if present
+    if [ -f "$NETRC" ]; then
+        cp "$NETRC" "${NETRC}.bak.$(date +%s)" 2>/dev/null || true
+        # Remove any existing github.com machine entry (skip its block) and write rest to temp
+        awk '
+            BEGIN { skip=0 }
+            /^machine[[:space:]]+github\.com([[:space:]]|$)/ { skip=1; next }
+            /^machine[[:space:]]+/ { if (skip) skip=0 }
+            { if (!skip) print }
+        ' "$NETRC" > "$tmp"
+    else
+        : > "$tmp"
+    fi
+
+    # Append the new github.com entry
+    printf "machine github.com\nlogin %s\npassword %s\n" "$name" "$token" >> "$tmp"
+
+    # Move into place and secure permissions
+    mv "$tmp" "$NETRC"
+    chmod 600 "$NETRC"
 
     printf "protocol=https\nhost=github.com\nusername=%s\npassword=%s\n" "$name" "$token" | git credential-cache store
     echo -e "\e[1;32mSwitched to GitHub account: \e[1;34m${name}\e[0m"
