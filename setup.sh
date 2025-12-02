@@ -19,5 +19,5 @@ for file in "${sh_files[@]}"; do
     fi
 done
 
-cs_change_git_account goat
+cs_switch_git_account goat
 printf "\033[1;32m[SUCCESS]\033[0m Shell Scripts setup complete. \033[1;90m(Location: $script_dir)\033[0m\n"
