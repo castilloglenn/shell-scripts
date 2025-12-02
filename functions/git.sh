@@ -58,9 +58,8 @@ cs_switch_git_account() {
     NETRC="$HOME/.netrc"
     tmp="$(mktemp 2>/dev/null || mktemp /tmp/netrc.XXXXXX)"
 
-    # Backup existing file if present
+    # Overwrite existing file: remove any existing github.com machine entry and write rest to temp
     if [ -f "$NETRC" ]; then
-        cp "$NETRC" "${NETRC}.bak.$(date +%s)" 2>/dev/null || true
         # Remove any existing github.com machine entry (skip its block) and write rest to temp
         awk '
             BEGIN { skip=0 }
