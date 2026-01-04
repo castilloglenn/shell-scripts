@@ -115,3 +115,12 @@ commit() {
     git reset HEAD~1
     cd -
 }
+
+cs_fetchandpullrebase() {
+    git add .
+    git stash
+    git fetch origin --prune
+    git pull --rebase
+    git stash pop
+    echo "\nRebased successfully."
+}
