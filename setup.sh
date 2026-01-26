@@ -19,5 +19,12 @@ for file in "${sh_files[@]}"; do
     fi
 done
 
-cs_switch_git_account goat
+personal_projects_dir=/Users/hipe/documents/personal
+
+if [[ "$PWD" == "$personal_projects_dir"* ]]; then
+    cs_switch_git_account personal
+else
+    cs_switch_git_account goat
+fi
+
 printf "\033[1;32m[SUCCESS]\033[0m Shell Scripts setup complete. \033[1;90m(Location: $script_dir)\033[0m\n"
