@@ -124,3 +124,11 @@ cs_fetchandpullrebase() {
     git stash pop
     echo "\nRebased successfully."
 }
+
+cs_checkoutnew() {
+    if [ -z "$1" ]; then
+        echo "Usage: cs_checkoutnew <branch-name>"
+        return 1
+    fi
+    git checkout -b "$1"
+}
