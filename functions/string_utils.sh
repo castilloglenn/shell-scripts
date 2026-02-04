@@ -21,3 +21,17 @@ snake_to_pascal() {
     }'
     printf '\n'
 }
+
+count() {
+    local s
+    if [ $# -eq 0 ]; then
+        IFS= read -r s || return 0
+    else
+        s="$1"
+    fi
+
+    local count
+    count=$(printf '%s' "$s" | wc -c | tr -d ' \n')
+    # Print label in green, count in yellow
+    printf "\033[1;32mCount:\033[0m \033[1;33m%s\033[0m\n" "$count"
+}
