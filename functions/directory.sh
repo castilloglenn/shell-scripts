@@ -20,9 +20,9 @@ mark() {
     # Activate it immediately for the current session
     hash -d $name="$current_path"
 
-    echo "  Bookmark saved!"
-    echo "   Source: $current_path"
-    echo "   Usage:  cd ~$name"
+    echo " ✅ Bookmark saved!"
+    echo "    Source: $current_path"
+    echo "    Usage:  cd ~$name"
 }
 
 edit_zshrc() {
