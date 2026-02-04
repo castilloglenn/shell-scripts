@@ -45,6 +45,14 @@ edit_shell_scripts() {
     code "$HOME/documents/personal/shell-scripts"
 }
 
+edit_task_logger() {
+    code "$HOME/documents/personal/task-logger"
+}
+
+edit_report_chat_summary() {
+    code "$HOME/documents/personal/report-chat-summary"
+}
+
 edit_config_files() {
     code "$HOME/documents/personal/config-files"
 }
