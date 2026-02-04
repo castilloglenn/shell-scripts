@@ -29,6 +29,10 @@ edit_zshrc() {
     code -n "$HOME/.zshrc"
 }
 
+edit_post_commit() {
+    code -n "$HOME/.git-hooks/post-commit"
+}
+
 edit_starship_config() {
     code -n "$HOME/.config/starship.toml"
 }
