@@ -1,4 +1,4 @@
-cs_reinstallflutterdeps() {
+reinstall_flutter_deps() {
     flutter pub cache clean
     flutter clean
     cd ios
@@ -11,9 +11,9 @@ cs_reinstallflutterdeps() {
     flutter pub run build_runner build --delete-conflicting-outputs
 }
 
-adbconnect() {
+adb_connect() {
     if [ $# -ne 3 ]; then
-        echo "Usage: adbconnect <third_octet> <fourth_octet> <port>"
+        echo "Usage: adb_connect <third_octet> <fourth_octet> <port>"
         return 1
     fi
     addr="192.168.$1.$2:$3"

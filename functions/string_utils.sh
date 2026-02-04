@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-# Convert snake_case (or kebab-case) to PascalCase
-# Usage: snake_to_pascal "some_value"  OR  echo "some_value" | snake_to_pascal
+
 snake_to_pascal() {
     local s
     if [ $# -eq 0 ]; then

@@ -1,5 +1,3 @@
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fcastilloglenn%2Fshell-scripts&count_bg=%230C82D3&title_bg=%23555555&icon=myspace.svg&icon_color=%23E7E7E7&title=Visits&edge_flat=false)](https://hits.seeyoufarm.com)
-
 # Shell Script Automation
 
 This repository provides a simple automation setup for shell scripting, allowing you to automatically source multiple scripts and their functions every time you open a terminal session. The setup involves two scripts: `activate.sh` and `setup.sh`.
@@ -15,20 +13,10 @@ This repository provides a simple automation setup for shell scripting, allowing
 - **Zsh**: These scripts assume you are using the Zsh shell and have a `.zshrc` file.
 - **functions directory**: Place all your `.sh` files containing functions inside a directory named `functions` in the same location as `activate.sh` and `setup.sh`.
 
-## Naming Convention to Avoid Conflicts
-
-To avoid conflicts with other terminal functions, it is important to enforce a naming convention for all custom functions. All function names should start with the prefix `cs_` (short for custom script). This ensures that your functions do not inadvertently override existing terminal commands or functions.
-
-For example:
-```bash
-cs_my_function() {
-    # Function code here
-}
-```
-
 ## How to Use
+
 To automate the process, you only need to run activate.sh once. This will add a command to your .zshrc file to source the setup.sh script every time a new terminal session is started.
 
-```
+```shell
 source activate.sh
 ```

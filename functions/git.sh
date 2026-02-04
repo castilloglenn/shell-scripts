@@ -1,22 +1,6 @@
-cs_newbranch() {
-    if [ -z "$1" ]; then
-        echo "Usage: cs_newbranch <branch-name>"
-        return 1
-    fi
-    git checkout -b castilloglenn/$1
-}
-
-cs_rebasemain() {
-    git stash
-    git checkout main
-    git fetch origin --prune
-    git rebase origin/main
-    git stash pop
-}
-
-cs_switch_git_account() {
+switch_git_account() {
     if [[ -z "$1" ]]; then
-        echo "Usage: cs_switch_git_account <personal|lrtechs|goat|hipe>"
+        echo "Usage: switch_git_account <personal|lrtechs|goat|hipe>"
         return 1
     fi
 
@@ -82,12 +66,12 @@ cs_switch_git_account() {
     echo -e "\e[1;32mSwitched to GitHub account: \e[1;34m${name}\e[0m"
 }
 
-cs_whichaccount() {
+which_account() {
     git config --global user.name
     git config --global user.email
 }
 
-cs_clonewithexplicittoken() {
+clone_with_explicit_token() {
     if [[ $1 != https://github.com/* ]]; then
         echo "Error: Invalid URL. Please provide a valid GitHub URL starting with 'https://github.com/'."
         return 1
@@ -96,39 +80,11 @@ cs_clonewithexplicittoken() {
     git clone "$url_with_token"
 }
 
-cs_pulldevelop() {
-    git stash
-    git checkout develop
-    git fetch origin --prune
-    git pull --rebase
-    git stash pop
-}
-
-commit() {
-    if [ $# -eq 0 ]; then
-        echo "Usage: commit <commit-message>"
-        return 1
-    fi
-    cd /Users/hipe/documents/personal/commit-history
-    git add .
-    git commit -m "$*"
-    git reset HEAD~1
-    cd -
-}
-
-cs_fetchandpullrebase() {
+fetch_and_pull_rebase() {
     git add .
     git stash
     git fetch origin --prune
     git pull --rebase
     git stash pop
     echo "\nRebased successfully."
-}
-
-cs_checkoutnew() {
-    if [ -z "$1" ]; then
-        echo "Usage: cs_checkoutnew <branch-name>"
-        return 1
-    fi
-    git checkout -b "$1"
 }

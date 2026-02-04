@@ -1,4 +1,4 @@
-usevenv() {
+activate_venv() {
     if [ -z "$1" ] || [ "$1" = "." ]; then
         if [ ! -d "venv" ]; then
             echo "No 'venv' directory found. Creating virtual environment in 'venv'..."
