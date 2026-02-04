@@ -26,5 +26,3 @@ if [[ "$PWD" == "$personal_projects_dir"* ]]; then
 else
     switch_git_account goat
 fi
-
-printf "\033[1;32m[SUCCESS]\033[0m Shell Scripts setup complete. \033[1;90m(Location: $script_dir)\033[0m\n"
