@@ -63,7 +63,7 @@ switch_git_account() {
     chmod 600 "$NETRC"
 
     printf "protocol=https\nhost=github.com\nusername=%s\npassword=%s\n" "$name" "$token" | git credential-cache store
-    echo -e "\e[1;32mSwitched to GitHub account: \e[1;34m${name}\e[0m"
+    echo -e " Switched to: \e[1;33m $name\e[0m"
 }
 
 which_account() {
