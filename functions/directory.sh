@@ -45,6 +45,10 @@ edit_mark_entries() {
     code -n "$HOME/.zsh_bookmarks"
 }
 
+edit_crontab_reminders() {
+    code -n "$HOME/reminder.sh" "$HOME/reminder.scpt"
+}
+
 edit_shell_scripts() {
     code "$HOME/documents/personal/shell-scripts"
 }
