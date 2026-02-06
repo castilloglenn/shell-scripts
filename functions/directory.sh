@@ -46,7 +46,7 @@ edit_mark_entries() {
 }
 
 edit_crontab_reminders() {
-    code -n "$HOME/reminder.sh" "$HOME/reminder.scpt"
+    code -n "$HOME/.cronjobs/reminder.sh" "$HOME/.cronjobs/reminder.scpt"
 }
 
 edit_shell_scripts() {
