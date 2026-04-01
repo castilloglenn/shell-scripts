@@ -1,6 +1,6 @@
 switch_git_account() {
     if [[ -z "$1" ]]; then
-        echo "Usage: switch_git_account <personal|lrtechs|goat|hipe>"
+        echo "Usage: switch_git_account <personal|lrtechs|hipe>"
         return 1
     fi
 
@@ -9,10 +9,9 @@ switch_git_account() {
     case "$account" in
         personal) idx=1 ;;
         lrtechs)  idx=2 ;;
-        goat)     idx=3 ;;
         hipe)     idx=4 ;;
         *)
-            echo "Unknown account. Please specify 'personal', 'lrtechs', 'goat', or 'hipe'."
+            echo "Unknown account. Please specify 'personal', 'lrtechs', or 'hipe'."
             return 1
             ;;
     esac

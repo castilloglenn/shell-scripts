@@ -1,0 +1,43 @@
+{
+    "workbench.colorCustomizations": {
+        "[Hyper Term Black]": {
+            "editor.background": "#0f0f0f",
+            "sideBarSectionHeader.background": "#0f1115",
+            "sideBar.background": "#000206",
+            "editor.findMatchHighlightBackground": "#fdf62b32",
+            "terminal.background": "#000000",
+            "editor.selectionBackground": "#00b7ff32",
+            "editorLineNumber.activeForeground": "#ffd900ca",
+            "editorCursor.foreground": "#ffffff"
+        },
+        "[GitHub Sharp Dark]": {
+            "editor.background": "#181818"
+        },
+        "statusBarItem.warningBackground": "#1360fb",
+        "statusBarItem.warningForeground": "#ffffff",
+        "statusBarItem.warningHoverBackground": "#1360fb",
+        "statusBarItem.warningHoverForeground": "#ffffff90",
+        "statusBarItem.remoteBackground": "#1360fb",
+        "statusBarItem.remoteForeground": "#ffffff",
+        "statusBarItem.remoteHoverBackground": "#1360fb",
+        "statusBarItem.remoteHoverForeground": "#ffffff90",
+        "focusBorder": "#1360fb99",
+        "progressBar.background": "#1360fb",
+        "textLink.foreground": "#53a0ff",
+        "textLink.activeForeground": "#60adff",
+        "selection.background": "#0653ee",
+        "list.highlightForeground": "#1360fb",
+        "list.focusAndSelectionOutline": "#1360fb99",
+        "button.background": "#1360fb",
+        "button.foreground": "#ffffff",
+        "button.hoverBackground": "#206dff",
+        "tab.activeBorderTop": "#206dff",
+        "pickerGroup.foreground": "#206dff",
+        "list.activeSelectionBackground": "#1360fb4d",
+        "panelTitle.activeBorder": "#206dff",
+        "activityBar.activeBorder": "#1360fb",
+        "activityBarBadge.foreground": "#ffffff",
+        "activityBarBadge.background": "#1360fb"
+    },
+    "window.title": "[P] shell-scripts"
+}
