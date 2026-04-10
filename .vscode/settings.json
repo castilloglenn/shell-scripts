@@ -1,5 +1,8 @@
 {
     "workbench.colorCustomizations": {
+        "editor.selectionBackground": "#00b7ff32",
+        "editorLineNumber.activeForeground": "#fff700",
+        "editor.findMatchHighlightBackground": "#fdf62b32",
         "[Hyper Term Black]": {
             "editor.background": "#0f0f0f",
             "sideBarSectionHeader.background": "#0f1115",

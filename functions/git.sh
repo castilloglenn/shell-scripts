@@ -9,7 +9,7 @@ switch_git_account() {
     case "$account" in
         personal) idx=1 ;;
         lrtechs)  idx=2 ;;
-        hipe)     idx=4 ;;
+        hipe)     idx=3 ;;
         *)
             echo "Unknown account. Please specify 'personal', 'lrtechs', or 'hipe'."
             return 1
