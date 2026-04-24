@@ -18,11 +18,3 @@ for file in "${sh_files[@]}"; do
         source "$file"
     fi
 done
-
-personal_projects_dir=/Users/hipe/documents/personal
-
-if [[ "$PWD" == "$personal_projects_dir"* ]]; then
-    switch_git_account personal
-else
-    switch_git_account hipe
-fi
