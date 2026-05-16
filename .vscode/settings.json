@@ -17,31 +17,13 @@
         "[GitHub Sharp Dark]": {
             "editor.background": "#181818"
         },
-        "statusBarItem.warningBackground": "#1360fb",
+        "statusBarItem.warningBackground": "#0c88c6",
         "statusBarItem.warningForeground": "#ffffff",
-        "statusBarItem.warningHoverBackground": "#1360fb",
+        "statusBarItem.warningHoverBackground": "#0c88c6",
         "statusBarItem.warningHoverForeground": "#ffffff90",
-        "statusBarItem.remoteBackground": "#1360fb",
+        "statusBarItem.remoteBackground": "#0c88c6",
         "statusBarItem.remoteForeground": "#ffffff",
-        "statusBarItem.remoteHoverBackground": "#1360fb",
-        "statusBarItem.remoteHoverForeground": "#ffffff90",
-        "focusBorder": "#1360fb99",
-        "progressBar.background": "#1360fb",
-        "textLink.foreground": "#53a0ff",
-        "textLink.activeForeground": "#60adff",
-        "selection.background": "#0653ee",
-        "list.highlightForeground": "#1360fb",
-        "list.focusAndSelectionOutline": "#1360fb99",
-        "button.background": "#1360fb",
-        "button.foreground": "#ffffff",
-        "button.hoverBackground": "#206dff",
-        "tab.activeBorderTop": "#206dff",
-        "pickerGroup.foreground": "#206dff",
-        "list.activeSelectionBackground": "#1360fb4d",
-        "panelTitle.activeBorder": "#206dff",
-        "activityBar.activeBorder": "#1360fb",
-        "activityBarBadge.foreground": "#ffffff",
-        "activityBarBadge.background": "#1360fb"
-    },
-    "window.title": "[P] shell-scripts"
+        "statusBarItem.remoteHoverBackground": "#0c88c6",
+        "statusBarItem.remoteHoverForeground": "#ffffff90"
+    }
 }
