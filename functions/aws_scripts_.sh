@@ -140,7 +140,25 @@ switch_aws_profile_in_claude_code() {
         mv "$tmp_file" "$config_file"
         echo "----------------------------------------"
         echo "✅ Updated Claude config: AWS_PROFILE='$profile', AWS_REGION='$region'."
-        echo "⚠️  You MUST completely restart Claude Code (fully quit and reopen) for this to take effect."
+        echo "⚠️  The Claude desktop app must be fully restarted for this to take effect."
+        echo "⚠️  Restarting will quit the app — any running agent or in-progress task will be stopped."
+
+        local restart
+        printf "Restart the Claude app now to apply? (y/N): "
+        read -r restart
+        if [[ "$restart" =~ ^[Yy]$ ]]; then
+            echo "Restarting Claude…"
+            osascript -e 'quit app "Claude"' >/dev/null 2>&1
+            # wait for it to fully exit before relaunching
+            local n=0
+            while pgrep -x "Claude" >/dev/null 2>&1 && [ "$n" -lt 20 ]; do
+                sleep 0.5
+                n=$((n + 1))
+            done
+            open -a "Claude" && echo "✅ Claude restarted."
+        else
+            echo "⚠️  Restart Claude manually for this to take effect."
+        fi
     else
         rm -f "$tmp_file"
         echo "❌ Failed to update Claude config."
