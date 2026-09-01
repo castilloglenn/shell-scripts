@@ -11,14 +11,14 @@ list_mcp_claude_accounts_and_projects() {
     local cc_config="$HOME/.claude.json"
     local dt_mcp="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
 
-    # ---- AWS profile per Claude client (each aws-api MCP env) ---------------
-    # The aws-api MCP server lives in BOTH configs and each carries its own
+    # ---- AWS profile per Claude client (each aws-mcp MCP env) ---------------
+    # The aws-mcp MCP server lives in BOTH configs and each carries its own
     # AWS_PROFILE / AWS_REGION (they can diverge), so report them separately.
     local cc_aws_profile cc_aws_region dt_aws_profile dt_aws_region
-    cc_aws_profile=$(jq -r '.mcpServers["aws-api"].env.AWS_PROFILE // "—"' "$cc_config" 2>/dev/null); [ -z "$cc_aws_profile" ] && cc_aws_profile="—"
-    cc_aws_region=$(jq -r  '.mcpServers["aws-api"].env.AWS_REGION  // "—"' "$cc_config" 2>/dev/null); [ -z "$cc_aws_region" ] && cc_aws_region="—"
-    dt_aws_profile=$(jq -r '.mcpServers["aws-api"].env.AWS_PROFILE // "—"' "$dt_mcp" 2>/dev/null); [ -z "$dt_aws_profile" ] && dt_aws_profile="—"
-    dt_aws_region=$(jq -r  '.mcpServers["aws-api"].env.AWS_REGION  // "—"' "$dt_mcp" 2>/dev/null); [ -z "$dt_aws_region" ] && dt_aws_region="—"
+    cc_aws_profile=$(jq -r '.mcpServers["aws-mcp"].env.AWS_PROFILE // "—"' "$cc_config" 2>/dev/null); [ -z "$cc_aws_profile" ] && cc_aws_profile="—"
+    cc_aws_region=$(jq -r  '.mcpServers["aws-mcp"].env.AWS_REGION  // "—"' "$cc_config" 2>/dev/null); [ -z "$cc_aws_region" ] && cc_aws_region="—"
+    dt_aws_profile=$(jq -r '.mcpServers["aws-mcp"].env.AWS_PROFILE // "—"' "$dt_mcp" 2>/dev/null); [ -z "$dt_aws_profile" ] && dt_aws_profile="—"
+    dt_aws_region=$(jq -r  '.mcpServers["aws-mcp"].env.AWS_REGION  // "—"' "$dt_mcp" 2>/dev/null); [ -z "$dt_aws_region" ] && dt_aws_region="—"
 
     # ---- Terminal AWS env (this shell's AWS_PROFILE / region) ---------------
     # Runs in the current shell, so it sees the live env vars. Unset profile

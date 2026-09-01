@@ -75,8 +75,8 @@ which_aws_profile_in_claude_code() {
             continue
         fi
 
-        profile=$(jq -r '.mcpServers["aws-api"].env.AWS_PROFILE // empty' "$config_file")
-        region=$(jq -r '.mcpServers["aws-api"].env.AWS_REGION // empty' "$config_file")
+        profile=$(jq -r '.mcpServers["aws-mcp"].env.AWS_PROFILE // empty' "$config_file")
+        region=$(jq -r '.mcpServers["aws-mcp"].env.AWS_REGION // empty' "$config_file")
 
         if [ -n "$profile" ]; then
             echo "$label: AWS_PROFILE='$profile', AWS_REGION='${region:-<none>}'"
@@ -154,15 +154,15 @@ switch_aws_profile_in_claude_code() {
         fi
 
         # Only update if this config actually defines the aws-api MCP server
-        if [ "$(jq -r 'has("mcpServers") and (.mcpServers | has("aws-api"))' "$config_file")" != "true" ]; then
-            echo "⚠️  $label config has no 'aws-api' MCP server, skipping."
+        if [ "$(jq -r 'has("mcpServers") and (.mcpServers | has("aws-mcp"))' "$config_file")" != "true" ]; then
+            echo "⚠️  $label config has no 'aws-mcp' MCP server, skipping."
             continue
         fi
 
         tmp_file=$(mktemp)
         if jq --arg profile "$profile" --arg region "$region" \
-            '.mcpServers["aws-api"].env.AWS_PROFILE = $profile
-             | .mcpServers["aws-api"].env.AWS_REGION = $region' \
+            '.mcpServers["aws-mcp"].env.AWS_PROFILE = $profile
+             | .mcpServers["aws-mcp"].env.AWS_REGION = $region' \
             "$config_file" > "$tmp_file"; then
             mv "$tmp_file" "$config_file"
             echo "✅ Updated $label config: AWS_PROFILE='$profile', AWS_REGION='$region'."
