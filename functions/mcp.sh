@@ -1,24 +1,27 @@
 
-# Show the CURRENTLY selected AWS profile/region for Claude Code, Claude Desktop
-# and this terminal, plus the active account/project for GCP, Firebase and
-# Cloudflare. Renders a single colored, aligned table.
+# Show the CURRENTLY selected AWS profile/region for Claude Desktop and this
+# terminal, plus the active account/project for GCP, Firebase and Cloudflare.
+# Claude Code no longer has a global aws-mcp server: its AWS access is per
+# project under ~/Documents/mcp/*, so that row points there instead of a value.
+# Renders a single colored, aligned table.
 list_mcp_claude_accounts_and_projects() {
     if ! command -v jq >/dev/null 2>&1; then
         echo "❌ 'jq' is required but not installed."
         return 1
     fi
 
-    local cc_config="$HOME/.claude.json"
     local dt_mcp="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+    local mcp_root="$HOME/Documents/mcp"
 
-    # ---- AWS profile per Claude client (each aws-mcp MCP env) ---------------
-    # The aws-mcp MCP server lives in BOTH configs and each carries its own
-    # AWS_PROFILE / AWS_REGION (they can diverge), so report them separately.
-    local cc_aws_profile cc_aws_region dt_aws_profile dt_aws_region
-    cc_aws_profile=$(jq -r '.mcpServers["aws-mcp"].env.AWS_PROFILE // "—"' "$cc_config" 2>/dev/null); [ -z "$cc_aws_profile" ] && cc_aws_profile="—"
-    cc_aws_region=$(jq -r  '.mcpServers["aws-mcp"].env.AWS_REGION  // "—"' "$cc_config" 2>/dev/null); [ -z "$cc_aws_region" ] && cc_aws_region="—"
-    dt_aws_profile=$(jq -r '.mcpServers["aws-mcp"].env.AWS_PROFILE // "—"' "$dt_mcp" 2>/dev/null); [ -z "$dt_aws_profile" ] && dt_aws_profile="—"
-    dt_aws_region=$(jq -r  '.mcpServers["aws-mcp"].env.AWS_REGION  // "—"' "$dt_mcp" 2>/dev/null); [ -z "$dt_aws_region" ] && dt_aws_region="—"
+    # ---- AWS profile for Claude Desktop (its aws-mcp MCP env) ---------------
+    local dt_aws_profile dt_aws_region
+    dt_aws_profile=$(jq -r '.mcpServers["aws-mcp"].env.AWS_PROFILE // "n/a"' "$dt_mcp" 2>/dev/null); [ -z "$dt_aws_profile" ] && dt_aws_profile="n/a"
+    dt_aws_region=$(jq -r  '.mcpServers["aws-mcp"].env.AWS_REGION  // "n/a"' "$dt_mcp" 2>/dev/null); [ -z "$dt_aws_region" ] && dt_aws_region="n/a"
+
+    # ---- Claude Code AWS: per project, not a single global value ------------
+    # Count the project dirs so the row reflects what is actually configured.
+    local cc_projects=0
+    [ -d "$mcp_root" ] && cc_projects=$(find "$mcp_root" -maxdepth 2 -name .mcp.json 2>/dev/null | wc -l | tr -d ' ')
 
     # ---- Terminal AWS env (this shell's AWS_PROFILE / region) ---------------
     # Runs in the current shell, so it sees the live env vars. Unset profile
@@ -31,9 +34,9 @@ list_mcp_claude_accounts_and_projects() {
     local gcp_acct gcp_proj
     if command -v gcloud >/dev/null 2>&1; then
         gcp_acct=$(gcloud config get-value account 2>/dev/null); [ -z "$gcp_acct" ] && gcp_acct="not logged in"
-        gcp_proj=$(gcloud config get-value project 2>/dev/null); [ -z "$gcp_proj" ] && gcp_proj="—"
+        gcp_proj=$(gcloud config get-value project 2>/dev/null); [ -z "$gcp_proj" ] && gcp_proj="n/a"
     else
-        gcp_acct="not installed"; gcp_proj="—"
+        gcp_acct="not installed"; gcp_proj="n/a"
     fi
 
     # ---- Firebase ------------------------------------------------------------
@@ -43,16 +46,16 @@ list_mcp_claude_accounts_and_projects() {
         [ -z "$fb_acct" ] && fb_acct="not logged in"
         # active project only exists inside a Firebase project dir (.firebaserc)
         fb_proj=$(firebase use 2>/dev/null | head -1)
-        [ -z "$fb_proj" ] && fb_proj="— (per-directory)"
+        [ -z "$fb_proj" ] && fb_proj="n/a (per-directory)"
     else
-        fb_acct="not installed"; fb_proj="—"
+        fb_acct="not installed"; fb_proj="n/a"
     fi
 
     # ---- Cloudflare (remote OAuth MCP) --------------------------------------
     # No local account name is stored, but the Cloudflare MCP server embeds the
     # active account in the 'execute' tool description. Ask it over JSON-RPC and
     # parse:  accountId is pre-set to "<id>" (<name>)
-    local cf_acct cf_proj="—"
+    local cf_acct cf_proj="n/a"
     local cf_token
     cf_token=$(jq -r '.access_token // empty' "$HOME/.mcp-auth"/*/*_tokens.json 2>/dev/null | head -1)
     if [ -z "$cf_token" ]; then
@@ -79,7 +82,7 @@ list_mcp_claude_accounts_and_projects() {
 
     # ---- Render --------------------------------------------------------------
     local rows=""
-    rows+="Claude Code (AWS)"$'\t'"$cc_aws_profile"$'\t'"$cc_aws_region"$'\n'
+    rows+="Claude Code (AWS)"$'\t'"per-project ($cc_projects)"$'\t'"~/Documents/mcp/*"$'\n'
     rows+="Claude Desktop (AWS)"$'\t'"$dt_aws_profile"$'\t'"$dt_aws_region"$'\n'
     rows+="Terminal (AWS)"$'\t'"$term_aws_profile"$'\t'"$term_aws_region"$'\n'
     rows+="GCP / gcloud"$'\t'"$gcp_acct"$'\t'"$gcp_proj"$'\n'
@@ -87,8 +90,11 @@ list_mcp_claude_accounts_and_projects() {
     rows+="Cloudflare"$'\t'"$cf_acct"$'\t'"$cf_proj"$'\n'
 
     printf '%s' "$rows" | awk -F'\t' '
+        # Placeholders are kept ASCII on purpose: this awk measures length() in
+        # bytes, so a multibyte cell (an em dash is 3 bytes but 1 column) pads
+        # its row short and breaks the alignment.
         function isbad(s) {
-            return (s ~ /^(—|not |uuid:)/ || s ~ /(not logged in|not connected|not installed|not configured)/);
+            return (s ~ /^(n\/a|not |uuid:)/ || s ~ /(not logged in|not connected|not installed|not configured)/);
         }
         {
             svc[NR]=$1; acc[NR]=$2; prj[NR]=$3;
@@ -123,11 +129,23 @@ list_mcp_claude_accounts_and_projects() {
                 # account color: red if it looks like "not set", else green
                 if (isbad(acc[i])) ac = sprintf("\033[0;31m%-*s\033[0m", wa, acc[i]);
                 else               ac = sprintf("\033[0;32m%-*s\033[0m", wa, acc[i]);
-                # project color: dim if "—", else yellow
+                # project color: dim if unset, else yellow
                 if (isbad(prj[i])) pc = sprintf("\033[0;90m%-*s\033[0m", wp, prj[i]);
                 else               pc = sprintf("\033[0;33m%-*s\033[0m", wp, prj[i]);
                 printf "  \033[1;36m%-*s\033[0m   %s   %s\n", ws, svc[i], ac, pc;
             }
         }
     '
+
+    # ---- Claude Code AWS hint ------------------------------------------------
+    # Each project dir carries its own .mcp.json, and sync_bookmarks.py gives it
+    # a ~mcp-<project> zsh bookmark. Note the zsh named-directory form has no
+    # slash: it is ~mcp-jkn, not ~/mcp-jkn.
+    printf "\n  \033[1;37mClaude Code AWS is per project\033[0m, configured under \033[0;33m%s/*/.mcp.json\033[0m\n" "$mcp_root"
+    printf "  Jump to one and resume there:  \033[0;32mcd ~mcp-<project> && claude -c\033[0m\n"
+    if [ "$cc_projects" -gt 0 ] && [ -d "$mcp_root" ]; then
+        local names
+        names=$(find "$mcp_root" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; 2>/dev/null | sort | tr '\n' ' ')
+        printf "  Available:  \033[0;90m%s\033[0m\n" "$names"
+    fi
 }

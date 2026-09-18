@@ -61,40 +61,41 @@ test_aws_profile() {
     fi
 }
 
-which_aws_profile_in_claude_code() {
+# Claude Code (CLI and the VS Code extension) no longer carries an aws-mcp
+# server in ~/.claude.json. Its AWS access is configured per project under
+# ~/Documents/mcp/*/.mcp.json, so only the Claude desktop app is read and
+# written here.
+which_aws_profile_in_claude_desktop() {
     local desktop_config="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
-    local code_config="$HOME/.claude.json"
 
-    local label config_file profile region
-    for entry in "Claude desktop:$desktop_config" "Claude Code:$code_config"; do
-        label="${entry%%:*}"
-        config_file="${entry#*:}"
+    if [ ! -f "$desktop_config" ]; then
+        echo "❌ Claude desktop config not found at: $desktop_config"
+        return 1
+    fi
 
-        if [ ! -f "$config_file" ]; then
-            echo "❌ $label config not found at: $config_file"
-            continue
-        fi
+    local profile region
+    profile=$(jq -r '.mcpServers["aws-mcp"].env.AWS_PROFILE // empty' "$desktop_config")
+    region=$(jq -r '.mcpServers["aws-mcp"].env.AWS_REGION // empty' "$desktop_config")
 
-        profile=$(jq -r '.mcpServers["aws-mcp"].env.AWS_PROFILE // empty' "$config_file")
-        region=$(jq -r '.mcpServers["aws-mcp"].env.AWS_REGION // empty' "$config_file")
+    if [ -n "$profile" ]; then
+        echo "Claude desktop: AWS_PROFILE='$profile', AWS_REGION='${region:-<none>}'"
+    else
+        echo "Claude desktop: No AWS_PROFILE found."
+    fi
 
-        if [ -n "$profile" ]; then
-            echo "$label: AWS_PROFILE='$profile', AWS_REGION='${region:-<none>}'"
-        else
-            echo "$label: No AWS_PROFILE found."
-        fi
-    done
+    echo "Claude Code:    per-project, see ~/Documents/mcp/*/.mcp.json"
 }
 
-switch_aws_profile_in_claude_code() {
+switch_aws_profile_in_claude_desktop() {
     local desktop_config="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
-    local code_config="$HOME/.claude.json"
 
-    # At least one config must exist to be worth continuing
-    if [ ! -f "$desktop_config" ] && [ ! -f "$code_config" ]; then
-        echo "❌ No Claude config found at:"
-        echo "   $desktop_config"
-        echo "   $code_config"
+    if [ ! -f "$desktop_config" ]; then
+        echo "❌ Claude desktop config not found at: $desktop_config"
+        return 1
+    fi
+
+    if [ "$(jq -r 'has("mcpServers") and (.mcpServers | has("aws-mcp"))' "$desktop_config")" != "true" ]; then
+        echo "⚠️  Claude desktop config has no 'aws-mcp' MCP server, nothing to switch."
         return 1
     fi
 
@@ -141,62 +142,39 @@ switch_aws_profile_in_claude_code() {
     fi
     echo "✅ AWS profile '$profile' is valid and has access."
 
-    # Update only AWS_PROFILE and AWS_REGION in each Claude config that exists
+    # Update only AWS_PROFILE and AWS_REGION, leaving the rest of the config alone
     echo "----------------------------------------"
-    local label config_file tmp_file updated_any=0
-    for entry in "Claude desktop:$desktop_config" "Claude Code:$code_config"; do
-        label="${entry%%:*}"
-        config_file="${entry#*:}"
-
-        if [ ! -f "$config_file" ]; then
-            echo "⚠️  $label config not found, skipping: $config_file"
-            continue
-        fi
-
-        # Only update if this config actually defines the aws-api MCP server
-        if [ "$(jq -r 'has("mcpServers") and (.mcpServers | has("aws-mcp"))' "$config_file")" != "true" ]; then
-            echo "⚠️  $label config has no 'aws-mcp' MCP server, skipping."
-            continue
-        fi
-
-        tmp_file=$(mktemp)
-        if jq --arg profile "$profile" --arg region "$region" \
-            '.mcpServers["aws-mcp"].env.AWS_PROFILE = $profile
-             | .mcpServers["aws-mcp"].env.AWS_REGION = $region' \
-            "$config_file" > "$tmp_file"; then
-            mv "$tmp_file" "$config_file"
-            echo "✅ Updated $label config: AWS_PROFILE='$profile', AWS_REGION='$region'."
-            updated_any=1
-        else
-            rm -f "$tmp_file"
-            echo "❌ Failed to update $label config: $config_file"
-        fi
-    done
-
-    if [ "$updated_any" -eq 1 ]; then
-        echo "----------------------------------------"
-        echo "⚠️  Claude Code picks up the new profile on its next session."
-        echo "⚠️  The Claude desktop app must be fully restarted for this to take effect."
-        echo "⚠️  Restarting will quit the app — any running agent or in-progress task will be stopped."
-
-        local restart
-        printf "Restart the Claude app now to apply? (y/N): "
-        read -r restart
-        if [[ "$restart" =~ ^[Yy]$ ]]; then
-            echo "Restarting Claude…"
-            osascript -e 'quit app "Claude"' >/dev/null 2>&1
-            # wait for it to fully exit before relaunching
-            local n=0
-            while pgrep -x "Claude" >/dev/null 2>&1 && [ "$n" -lt 20 ]; do
-                sleep 0.5
-                n=$((n + 1))
-            done
-            open -a "Claude" && echo "✅ Claude restarted."
-        else
-            echo "⚠️  Restart Claude manually for this to take effect."
-        fi
-    else
-        echo "❌ No Claude config was updated."
+    local tmp_file
+    tmp_file=$(mktemp)
+    if ! jq --arg profile "$profile" --arg region "$region" \
+        '.mcpServers["aws-mcp"].env.AWS_PROFILE = $profile
+         | .mcpServers["aws-mcp"].env.AWS_REGION = $region' \
+        "$desktop_config" > "$tmp_file"; then
+        rm -f "$tmp_file"
+        echo "❌ Failed to update Claude desktop config: $desktop_config"
         return 1
+    fi
+    mv "$tmp_file" "$desktop_config"
+    echo "✅ Updated Claude desktop config: AWS_PROFILE='$profile', AWS_REGION='$region'."
+
+    echo "----------------------------------------"
+    echo "⚠️  The Claude desktop app must be fully restarted for this to take effect."
+    echo "⚠️  Restarting will quit the app — any running agent or in-progress task will be stopped."
+
+    local restart
+    printf "Restart the Claude app now to apply? (y/N): "
+    read -r restart
+    if [[ "$restart" =~ ^[Yy]$ ]]; then
+        echo "Restarting Claude…"
+        osascript -e 'quit app "Claude"' >/dev/null 2>&1
+        # wait for it to fully exit before relaunching
+        local n=0
+        while pgrep -x "Claude" >/dev/null 2>&1 && [ "$n" -lt 20 ]; do
+            sleep 0.5
+            n=$((n + 1))
+        done
+        open -a "Claude" && echo "✅ Claude restarted."
+    else
+        echo "⚠️  Restart Claude manually for this to take effect."
     fi
 }
