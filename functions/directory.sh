@@ -64,3 +64,7 @@ edit_report_chat_summary() {
 edit_config_files() {
     code "$HOME/documents/personal/config-files"
 }
+
+edit_hris_tis() {
+    code "$HOME/documents/personal/hris-tis"
+}
