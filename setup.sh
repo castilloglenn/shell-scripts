@@ -21,4 +21,4 @@ done
 
 # Auto-register new git repos as zsh bookmarks. Silent unless it adds some.
 # Must run before ~/.zshrc sources ~/.zsh_bookmarks. Add-only: never prunes.
-python3 "$script_dir/automation/mark_all_repositories.py" --apply --quiet 2>/dev/null || true
+python3 "$script_dir/automation/sync_bookmarks.py" --apply --quiet 2>/dev/null || true
